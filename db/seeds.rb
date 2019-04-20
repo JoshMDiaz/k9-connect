@@ -11,11 +11,11 @@ require 'faker'
   Dog.create({
     name: Faker::Name.first_name,
     user_id: i + 1,
-    gender: i % 2 == 0 ? 'Male' : 'Female',
+    gender: Faker::Gender.binary_type,
     breed: Faker::Creature::Dog.breed,
-    registered: i % 3 == 0 ? true : false,
+    registered: true,
     description: Faker::Lorem.paragraph,
     birthdate: Faker::Date.birthday(1, 13),
-    papered: i % 3 == 0 ? true : false
+    papered: true
   })
 end
