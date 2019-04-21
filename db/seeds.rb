@@ -16,6 +16,7 @@ require 'faker'
     registered: true,
     description: Faker::Lorem.paragraph,
     birthdate: Faker::Date.birthday(1, 13),
-    papered: true
+    papered: true,
+    eyes: Faker::Color.color_name
   })
 end
