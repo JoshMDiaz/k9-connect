@@ -2,7 +2,7 @@ module Api
   module V1
     class DogsController < ApplicationController
       def index
-        dogs = Dog.all
+        dogs = Dog.where(dog_filters)
         render json: { data: dogs }, status: :ok
       end
 
@@ -37,16 +37,29 @@ module Api
       end
 
       private
+
       def dog_params
         params.permit(
           :name,
-          :dog_id,
           :gender,
           :breed,
           :papered,
           :registered,
           :description,
-          :birthdate
+          :birthdate,
+          :eyes
+        )
+      end
+
+      def dog_filters
+        params.permit(
+          :name,
+          :gender,
+          :papered,
+          :registered,
+          :birthdate,
+          breed: [],
+          eyes: []
         )
       end
     end
