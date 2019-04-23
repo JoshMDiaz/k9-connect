@@ -19,7 +19,6 @@ module Api
 
       def create
         dog = Dog.new(dog_params)
-
         if dog.save
           render json: { data: dog }, status: :ok
         else
