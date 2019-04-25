@@ -3,6 +3,7 @@ module Api
     class DogsController < ApplicationController
       def index
         dogs = Dog.where(dog_filters)
+        dogs = dogs.where(birthdate: birthdate_range) unless  params[:start_date].blank?
         render json: { data: dogs }, status: :ok
       end
 
@@ -60,6 +61,10 @@ module Api
           breed: [],
           eyes: []
         )
+      end
+
+      def birthdate_range
+        Date.parse(params[:start_date])..Date.parse(params[:end_date]) unless params[:start_date].blank?
       end
     end
   end
