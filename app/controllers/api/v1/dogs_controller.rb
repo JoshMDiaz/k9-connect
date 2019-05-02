@@ -3,7 +3,8 @@ module Api
     class DogsController < ApplicationController
       def index
         dogs = Dog.where(dog_filters)
-        dogs = dogs.where(birthdate: birthdate_range) unless  params[:start_date].blank?
+        dogs = dogs.where('lower(name) = ?', params[:name].downcase) unless params[:name].blank?
+        dogs = dogs.where(birthdate: birthdate_range) unless params[:start_date].blank?
         render json: { data: dogs }, status: :ok
       end
 
@@ -53,7 +54,6 @@ module Api
 
       def dog_filters
         params.permit(
-          :name,
           :gender,
           :papered,
           :registered,
