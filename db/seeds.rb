@@ -1,6 +1,6 @@
 require 'faker'
 
-10.times do |i|
+100.times do |i|
   User.create({
     name: Faker::Name.name,
     email: Faker::Internet.email,
@@ -14,7 +14,7 @@ require 'faker'
     gender: Faker::Gender.binary_type,
     breed: Faker::Creature::Dog.breed,
     registered: true,
-    description: Faker::Lorem.paragraph,
+    description: Faker::Lorem.paragraph(3),
     birthdate: Faker::Date.birthday(1, 13),
     papered: true,
     eyes: Faker::Color.color_name
