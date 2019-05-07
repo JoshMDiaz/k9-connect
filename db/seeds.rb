@@ -200,7 +200,6 @@ end
   User.create({
     name: Faker::Name.name,
     email: Faker::Internet.email,
-    address: Faker::Address.street_address,
     city: Faker::Address.city,
     zip: Faker::Address.zip
   })

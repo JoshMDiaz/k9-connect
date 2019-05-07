@@ -38,7 +38,7 @@ module Api
 
       private
       def user_params
-        params.permit(:name, :email, :address, :zip, :city)
+        params.permit(:name, :email, :zip, :city)
       end
     end
   end
