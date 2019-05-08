@@ -209,9 +209,16 @@ end
     gender: Faker::Gender.binary_type,
     breed: Faker::Creature::Dog.breed,
     registered: true,
-    description: Faker::Lorem.paragraph(3),
+    description: Faker::Lorem.paragraphs(5),
     birthdate: Faker::Date.birthday(1, 13),
     papered: true,
     eyes: Faker::Color.color_name
+  })
+end
+
+500.times do |i|
+  DogImage.create({
+    dog_id: rand(1..100),
+    url: 'https://dog.ceo/api/breeds/image/random'
   })
 end
