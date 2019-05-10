@@ -22,14 +22,15 @@ ActiveRecord::Schema.define(version: 2019_05_08_034721) do
   end
 
   create_table "dog_images", force: :cascade do |t|
-    t.string "dog_id"
+    t.bigint "dog_id"
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["dog_id"], name: "index_dog_images_on_dog_id"
   end
 
   create_table "dogs", force: :cascade do |t|
-    t.integer "user_id"
+    t.bigint "user_id"
     t.string "name"
     t.string "gender"
     t.string "breed"
@@ -40,6 +41,7 @@ ActiveRecord::Schema.define(version: 2019_05_08_034721) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "eyes"
+    t.index ["user_id"], name: "index_dogs_on_user_id"
   end
 
   create_table "eye_colors", force: :cascade do |t|
@@ -64,4 +66,6 @@ ActiveRecord::Schema.define(version: 2019_05_08_034721) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "dog_images", "dogs"
+  add_foreign_key "dogs", "users"
 end

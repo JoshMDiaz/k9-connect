@@ -2,16 +2,15 @@ module Api
   module V1
     class DogsController < ApplicationController
       def index
-        dogs = Dog.joins(:dog_images)
-        dogs = dogs.where(dog_filters)
+        dogs = Dog.includes(:dog_images).where(dog_filters)
         dogs = dogs.where('lower(name) = ?', params[:name].downcase) unless params[:name].blank?
         dogs = dogs.where(birthdate: birthdate_range) unless params[:start_date].blank?
-        render json: { data: dogs }, status: :ok
+        render json: { data: dogs }, include: :dog_images, status: :ok
       end
 
       def show
         dog = Dog.find(params[:id])
-        render json: { data: dog }, status: :ok
+        render json: { data: dog }, include: :dog_images, status: :ok
       end
 
       def destroy

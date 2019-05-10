@@ -196,7 +196,7 @@ eyes.each do |e|
   })
 end
 
-100.times do |i|
+1000.times do |i|
   User.create({
     name: Faker::Name.name,
     email: Faker::Internet.email,
@@ -216,9 +216,9 @@ end
   })
 end
 
-500.times do |i|
+5000.times do |i|
   DogImage.create({
-    dog_id: rand(1..100),
-    url: 'https://dog.ceo/api/breeds/image/random'
+    dog_id: rand(1..1000),
+    url: Faker::LoremPixel.image("800x553", false, 'animals')
   })
 end
