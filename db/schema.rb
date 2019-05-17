@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_08_034721) do
+ActiveRecord::Schema.define(version: 2019_05_17_003302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,15 @@ ActiveRecord::Schema.define(version: 2019_05_08_034721) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "dog_breeds", force: :cascade do |t|
+    t.bigint "dog_id"
+    t.bigint "breed_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["breed_id"], name: "index_dog_breeds_on_breed_id"
+    t.index ["dog_id"], name: "index_dog_breeds_on_dog_id"
   end
 
   create_table "dog_images", force: :cascade do |t|
@@ -33,14 +42,13 @@ ActiveRecord::Schema.define(version: 2019_05_08_034721) do
     t.bigint "user_id"
     t.string "name"
     t.string "gender"
-    t.string "breed"
+    t.string "eyes"
     t.boolean "papered"
     t.boolean "registered"
     t.text "description"
     t.date "birthdate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "eyes"
     t.index ["user_id"], name: "index_dogs_on_user_id"
   end
 
@@ -57,15 +65,31 @@ ActiveRecord::Schema.define(version: 2019_05_08_034721) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_dogs", force: :cascade do |t|
+    t.bigint "dog_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dog_id"], name: "index_user_dogs_on_dog_id"
+    t.index ["user_id"], name: "index_user_dogs_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
+    t.string "sub"
+    t.string "phone"
     t.string "email"
+    t.string "address"
     t.string "zip"
     t.string "city"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "dog_breeds", "breeds"
+  add_foreign_key "dog_breeds", "dogs"
   add_foreign_key "dog_images", "dogs"
   add_foreign_key "dogs", "users"
+  add_foreign_key "user_dogs", "dogs"
+  add_foreign_key "user_dogs", "users"
 end

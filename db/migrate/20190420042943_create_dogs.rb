@@ -4,11 +4,11 @@ class CreateDogs < ActiveRecord::Migration[5.2]
       t.references :user, foreign_key: true, index: true
       t.string :name
       t.string :gender
-      t.string :breed
+      t.string :eyes
+      t.date :birthdate
       t.boolean :papered
       t.boolean :registered
       t.text :description
-      t.date :age
 
       t.timestamps
     end
