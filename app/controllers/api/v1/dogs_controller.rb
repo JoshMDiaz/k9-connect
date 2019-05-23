@@ -20,10 +20,10 @@ module Api
       end
 
       def create
-        dog = Dog.new(dog_params)
-        if dog.save
+        dog = DogService.create_dog(dog_params)
+        begin
           render json: { data: dog }, status: :ok
-        else
+        rescue
           render json: { data: dog.errors }, status: :unprocessable_entity
         end
       end
@@ -41,15 +41,18 @@ module Api
 
       def dog_params
         params.permit(
-          :name,
-          :gender,
-          :breed,
-          :papered,
-          :registered,
-          :description,
-          :birthdate,
-          :eyes,
-          :dog_id
+          dog: [
+            :name,
+            :gender,
+            :papered,
+            :registered,
+            :description,
+            :birthdate,
+            :eyes,
+            :dog_id
+          ],
+          breeds: [],
+          dog_images: []
         )
       end
 

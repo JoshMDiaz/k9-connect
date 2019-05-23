@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :dogs
   validates :name, presence: true
   validates :email, presence: true
   validates :zip, presence: false
