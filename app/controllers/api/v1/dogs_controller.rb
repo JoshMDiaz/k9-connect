@@ -10,7 +10,7 @@ module Api
 
       def show
         dog = Dog.find(params[:id])
-        render json: { data: dog }, include: :dog_images, status: :ok
+        render json: { data: dog }, include: [:dog_images, :breeds], status: :ok
       end
 
       def destroy

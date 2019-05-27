@@ -13,9 +13,10 @@ class DogService
             end
 
             image_urls = params[:dog_images]
-            image_urls.each do | url |
+            image_urls.each_with_index do | url, i |
                 dog.dog_images << DogImage.create({
-                    url: url
+                    url: url,
+                    main_image: i == 0 ? true : false
                 })
             end
 
