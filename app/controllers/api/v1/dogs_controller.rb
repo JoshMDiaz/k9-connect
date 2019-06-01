@@ -2,10 +2,10 @@ module Api
   module V1
     class DogsController < ApplicationController
       def index
-        dogs = Dog.includes(:dog_images).where(dog_filters)
-        dogs = dogs.where('lower(name) = ?', params[:name].downcase) unless params[:name].blank?
+        dogs = Dog.includes([:dog_images, :breeds]).where(dog_filters)
+        dogs = dogs.where('lower(name) LIKE ?', "%#{params[:name].downcase}%") unless params[:name].blank?
         dogs = dogs.where(birthdate: birthdate_range) unless params[:start_date].blank?
-        render json: { data: dogs }, include: :dog_images, status: :ok
+        render json: { data: dogs }, include: [:dog_images, :breeds], status: :ok
       end
 
       def show
@@ -29,7 +29,7 @@ module Api
       end
 
       def update
-        dog = Dog.find(params[:id])
+        dog = DogService.update_dog(dog_params)
         if dog.update_attributes(dog_params)
           render json: { data: dog }, status: :ok
         else
@@ -62,7 +62,7 @@ module Api
           :papered,
           :registered,
           :birthdate,
-          breed: [],
+          breeds: [],
           eyes: []
         )
       end

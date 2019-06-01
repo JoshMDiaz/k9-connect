@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :breeds
       resources :eye_colors
       resources :states
+      resources :search
     end
   end
 end
