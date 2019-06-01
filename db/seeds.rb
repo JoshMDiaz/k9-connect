@@ -442,34 +442,34 @@ states.each do |state|
   })
 end
 
-100.times do |i|
-  User.create({
-    name: Faker::Name.name,
-    email: Faker::Internet.email,
-    city: Faker::Address.city,
-    zip: Faker::Address.zip,
-    address: Faker::Address.street_address,
-    sub: Faker::IDNumber.valid,
-    phone: Faker::PhoneNumber.phone_number
-  })
-end
+# 100.times do |i|
+#   User.create({
+#     name: Faker::Name.name,
+#     email: Faker::Internet.email,
+#     city: Faker::Address.city,
+#     zip: Faker::Address.zip,
+#     address: Faker::Address.street_address,
+#     sub: Faker::IDNumber.valid,
+#     phone: Faker::PhoneNumber.phone_number
+#   })
+# end
 
-100.times do |i|
-  Dog.create({
-    name: Faker::Name.first_name,
-    user_id: rand(1..65),
-    gender: Faker::Gender.binary_type,
-    registered: true,
-    description: Faker::Lorem.paragraph_by_chars(256, false),
-    birthdate: Faker::Date.birthday(1, 13),
-    papered: true,
-    eyes: eyes.sample
-  })
-end
+# 100.times do |i|
+#   Dog.create({
+#     name: Faker::Name.first_name,
+#     user_id: rand(1..65),
+#     gender: Faker::Gender.binary_type,
+#     registered: true,
+#     description: Faker::Lorem.paragraph_by_chars(256, false),
+#     birthdate: Faker::Date.birthday(1, 13),
+#     papered: true,
+#     eyes: eyes.sample
+#   })
+# end
 
-500.times do |i|
-  DogImage.create({
-    dog_id: rand(1..100),
-    url: Faker::LoremPixel.image("800x553", false, 'animals')
-  })
-end
+# 500.times do |i|
+#   DogImage.create({
+#     dog_id: rand(1..100),
+#     url: Faker::LoremPixel.image("800x553", false, 'animals')
+#   })
+# end

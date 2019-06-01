@@ -44,10 +44,10 @@ ActiveRecord::Schema.define(version: 2019_05_26_180106) do
     t.string "name"
     t.string "gender"
     t.string "eyes"
+    t.date "birthdate"
     t.boolean "papered"
     t.boolean "registered"
     t.text "description"
-    t.date "birthdate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_dogs_on_user_id"
@@ -78,8 +78,10 @@ ActiveRecord::Schema.define(version: 2019_05_26_180106) do
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "sub"
+    t.string "picture"
     t.string "phone"
     t.string "email"
+    t.string "state"
     t.string "address"
     t.string "zip"
     t.string "city"
