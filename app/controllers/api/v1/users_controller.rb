@@ -28,7 +28,7 @@ module Api
       end
 
       def update
-        user = User.find(params[:id])
+        user = User.find_by sub: params[:id]
         if user.update_attributes(user_params)
           render json: { data: user }, status: :ok
         else
@@ -41,8 +41,11 @@ module Api
         params.permit(
           :name,
           :email,
+          :phone,
+          :picture,
           :zip,
           :city,
+          :state,
           :address,
           :sub
         )
