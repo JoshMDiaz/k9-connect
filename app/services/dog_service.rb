@@ -1,10 +1,10 @@
 class DogService
 
-    def self.create_dog(params)
+    def self.create_dog(params, current_user)
         Dog.transaction do
             dog = Dog.new
             dog.assign_attributes(params[:dog].to_h)
-            dog.user_id = 1
+            dog.user_id = current_user.id
             dog.save!
 
             breed_ids = params[:breeds].split(",")

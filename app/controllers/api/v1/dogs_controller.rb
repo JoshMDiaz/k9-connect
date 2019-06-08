@@ -20,7 +20,7 @@ module Api
       end
 
       def create
-        dog = DogService.create_dog(dog_params)
+        dog = DogService.create_dog(dog_params, @current_user)
         begin
           render json: { data: dog }, status: :ok
         rescue
@@ -29,7 +29,7 @@ module Api
       end
 
       def update
-        dog = DogService.update_dog(dog_params)
+        dog = DogService.update_dog(dog_params, @current_user)
         if dog.update_attributes(dog_params)
           render json: { data: dog }, status: :ok
         else
