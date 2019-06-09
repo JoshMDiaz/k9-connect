@@ -8,7 +8,7 @@ module Api
 
       def show
         user = User.find_by sub: params[:id]
-        render json: { data: user }, status: :ok
+        render json: { data: user }, :include => {:dogs => {:include => [:dog_images, :breeds]}}, status: :ok
       end
 
       def destroy
