@@ -24,12 +24,11 @@ class DogService
         end
     end
 
-    def self.update_dog(params)
-        puts params
+    def self.update_dog(params, current_user)
         Dog.transaction do
             dog = Dog.find(params[:id])
             dog.assign_attributes(params[:dog].to_h)
-            dog.user_id = 1
+            dog.user_id = current_user.id
             dog.save!
 
             breed_ids = params[:breeds].split(",")

@@ -2,15 +2,32 @@ module Api
   module V1
     class DogsController < ApplicationController
       def index
-        dogs = Dog.includes([:dog_images, :breeds]).where(dog_filters)
+        query = <<-query
+          select
+          d.*,
+          case when uf.id is not null then true else false end as is_favorite
+          from dogs d
+          left join user_favorites uf on uf.dog_id = d.id and uf.user_id = :user_id
+        query
+
+        dogs = Dog.find_by_sql([query, { user_id: @current_user.id }])
         dogs = dogs.where('lower(name) LIKE ?', "%#{params[:name].downcase}%") unless params[:name].blank?
         dogs = dogs.where(birthdate: birthdate_range) unless params[:start_date].blank?
         render json: { data: dogs }, include: [:dog_images, :breeds], status: :ok
       end
 
       def show
-        dog = Dog.find(params[:id])
-        render json: { data: dog }, include: [:dog_images, :breeds], status: :ok
+        query = <<-query
+          select
+          d.*,
+          case when uf.id is not null then true else false end as is_favorite
+          from dogs d
+          left join user_favorites uf on uf.dog_id = d.id and uf.user_id = :user_id
+          where d.id = :dog_id
+        query
+
+        dog = Dog.find_by_sql([query, { user_id: @current_user.id, dog_id: params[:id] }])
+        render json: { data: dog[0] }, include: [:dog_images, :breeds], status: :ok
       end
 
       def destroy
