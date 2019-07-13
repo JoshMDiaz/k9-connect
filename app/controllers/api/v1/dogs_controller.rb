@@ -2,18 +2,12 @@ module Api
   module V1
     class DogsController < ApplicationController
       def index
-        query = <<-query
-          select
-          d.*,
-          case when uf.id is not null then true else false end as is_favorite
-          from dogs d
-          left join user_favorites uf on uf.dog_id = d.id and uf.user_id = :user_id
-        query
-
-        dogs = Dog.find_by_sql([query, { user_id: @current_user.id }])
-        dogs = dogs.where('lower(name) LIKE ?', "%#{params[:name].downcase}%") unless params[:name].blank?
-        dogs = dogs.where(birthdate: birthdate_range) unless params[:start_date].blank?
-        render json: { data: dogs }, include: [:dog_images, :breeds], status: :ok
+        extra_attrs = [:breeds, :dog_images]
+        options = params.permit!.to_h.merge!({user_id: @current_user.id})
+        dogs = DogService.search_dogs(options)
+        ActiveRecord::Associations::Preloader.new.preload(dogs, extra_attrs)
+        enhanced_dogs = dogs.as_json(include: extra_attrs)
+        render json: { data: enhanced_dogs }
       end
 
       def show
