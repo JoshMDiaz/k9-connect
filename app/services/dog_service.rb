@@ -69,6 +69,7 @@ class DogService
             breeds: options[:breed],
             start_date: options[:start_date],
             end_date: options[:end_date],
+            nearby_user_ids: options[:nearby_user_ids]
         }
         conditions = []
         conditions << 'd.name ilike :name_filter' if options[:name]
@@ -80,6 +81,7 @@ class DogService
         conditions << 'b.name in (:breeds)' if options[:breed]
         conditions << 'd.birthdate >= :start_date' if options[:start_date]
         conditions << 'd.birthdate <= :end_date' if options[:end_date]
+        conditions << 'd.user_id in (:nearby_user_ids)' if options[:distance]
         query = <<-query
           select
             d.*,
