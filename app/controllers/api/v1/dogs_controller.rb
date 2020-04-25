@@ -3,7 +3,8 @@ module Api
     class DogsController < ApplicationController
       def index
         extra_attrs = [:breeds, :dog_images]
-        options = params.permit!.to_h.merge!({user_id: @current_user.id})
+        nearby_user_ids = @current_user.nearbys(params[:distance]).select(:id).map(&:id) if params[:distance]
+        options = params.permit!.to_h.merge!({user_id: @current_user.id, nearby_user_ids: nearby_user_ids})
         dogs = DogService.search_dogs(options)
         ActiveRecord::Associations::Preloader.new.preload(dogs, extra_attrs)
         enhanced_dogs = dogs.as_json(include: extra_attrs)
