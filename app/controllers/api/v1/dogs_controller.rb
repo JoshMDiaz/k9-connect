@@ -2,9 +2,13 @@ module Api
   module V1
     class DogsController < ApplicationController
       def index
+        page     = [params[:page].to_i, 1].max
+        per_page = [params[:per_page].to_i, 10].max #change this based on per_page requriement in PSD
+        offset   = per_page * (page - 1)
+
         extra_attrs = [:breeds, :dog_images]
         nearby_user_ids = @current_user.nearbys(params[:distance]).select(:id).map(&:id) if params[:distance]
-        options = params.permit!.to_h.merge!({user_id: @current_user.id, nearby_user_ids: nearby_user_ids})
+        options = params.permit!.to_h.merge!({user_id: @current_user.id, nearby_user_ids: nearby_user_ids, offset: offset, limit: per_page})
         dogs = DogService.search_dogs(options)
         ActiveRecord::Associations::Preloader.new.preload(dogs, extra_attrs)
         enhanced_dogs = dogs.as_json(include: extra_attrs)

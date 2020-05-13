@@ -58,7 +58,11 @@ class DogService
         # 7) Eye color ✅
         # 8) Miles away (low and high range) - haven’t worked on this at all really ⌛(pending)
         # 9) Favorite ✅
-        query_params = {
+
+       limit_clause   = options[:limit] ? "LIMIT #{options[:limit]}" : ''
+       offset_clause  = options[:offset] ? "OFFSET #{options[:offset]}" : ''
+
+       query_params = {
             name_filter: "%#{options[:name]}%",
             gender: options[:gender],
             papered: options[:papered],
@@ -94,7 +98,11 @@ class DogService
           left join breeds b on db.breed_id = b.id
           left join user_favorites uf on d.id = uf.dog_id and uf.user_id = :user_id
           #{'where ' + conditions.join("\n and ") unless conditions.empty?}
+
           group by d.id, uf.id, u.email, u.phone
+
+          #{limit_clause}
+          #{offset_clause}
         query
 
         dogs = Dog.find_by_sql([query, query_params])
