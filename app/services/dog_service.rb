@@ -85,13 +85,16 @@ class DogService
         query = <<-query
           select
             d.*,
+            u.email as email,
+            u.phone as phone,
             uf.id is not null as is_favorite
           from dogs d
+          left join users u on u.id = d.user_id
           left join dog_breeds db on d.id = db.dog_id
           left join breeds b on db.breed_id = b.id
           left join user_favorites uf on d.id = uf.dog_id and uf.user_id = :user_id
           #{'where ' + conditions.join("\n and ") unless conditions.empty?}
-          group by d.id, uf.id
+          group by d.id, uf.id, u.email, u.phone
         query
 
         dogs = Dog.find_by_sql([query, query_params])

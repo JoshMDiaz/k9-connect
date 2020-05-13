@@ -15,8 +15,11 @@ module Api
         query = <<-query
           select
           d.*,
+          u.email as email,
+          u.phone as phone,
           case when uf.id is not null then true else false end as is_favorite
           from dogs d
+          left join users u on u.id = d.user_id
           left join user_favorites uf on uf.dog_id = d.id and uf.user_id = :user_id
           where d.id = :dog_id
         query
