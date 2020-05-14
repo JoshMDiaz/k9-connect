@@ -30,10 +30,10 @@ class DogService
             dog.user_id = current_user.id
             dog.save!
 
-            breed_ids = params[:breeds].split(",")
-            breed_ids.each do | id |
+            breed_ids = params[:breeds]
+            breed_ids.each do | id |                
                 dog.breeds << Breed.find(id)
-            end
+            end if breed_ids.present?
 
             image_urls = params[:dog_images]
             image_urls.each_with_index do | url, i |
@@ -41,7 +41,7 @@ class DogService
                     url: url,
                     main_image: i == 0 ? true : false
                 })
-            end
+            end if image_urls.present?
 
             return dog
         end

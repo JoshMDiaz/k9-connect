@@ -3,7 +3,7 @@ module Api
     class DogsController < ApplicationController
       def index
         page     = [params[:page].to_i, 1].max
-        per_page = [params[:per_page].to_i, 10].max #change this based on per_page requriement in PSD
+        per_page = [params[:per_page].to_i, 20].max #change this based on per_page requriement in PSD
         offset   = per_page * (page - 1)
 
         extra_attrs = [:breeds, :dog_images]
@@ -48,10 +48,10 @@ module Api
       end
 
       def update
-        dog = DogService.update_dog(dog_params, @current_user)
-        if dog.update_attributes(dog_params)
+        begin
+          dog = DogService.update_dog(dog_params, @current_user)
           render json: { data: dog }, status: :ok
-        else
+        rescue
           render json: { data: dog.errors }, status: :unprocessable_entity
         end
       end
