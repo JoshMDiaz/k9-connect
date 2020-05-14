@@ -89,6 +89,7 @@ class DogService
         query = <<-query
           select
             d.*,
+            count(*) OVER (),
             u.email as email,
             u.phone as phone,
             uf.id is not null as is_favorite
