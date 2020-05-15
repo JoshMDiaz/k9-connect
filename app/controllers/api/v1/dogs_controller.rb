@@ -60,6 +60,7 @@ module Api
 
       def dog_params
         params.permit(
+          :id,
           dog: [
             :name,
             :gender,
