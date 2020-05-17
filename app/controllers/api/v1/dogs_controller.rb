@@ -2,9 +2,13 @@ module Api
   module V1
     class DogsController < ApplicationController
       def index
+        page     = [params[:page].to_i, 1].max
+        per_page = [params[:per_page].to_i, 20].max #change this based on per_page requriement in PSD
+        offset   = per_page * (page - 1)
+
         extra_attrs = [:breeds, :dog_images]
         nearby_user_ids = @current_user.nearbys(params[:distance]).select(:id).map(&:id) if params[:distance]
-        options = params.permit!.to_h.merge!({user_id: @current_user.id, nearby_user_ids: nearby_user_ids})
+        options = params.permit!.to_h.merge!({user_id: @current_user.id, nearby_user_ids: nearby_user_ids, offset: offset, limit: per_page})
         dogs = DogService.search_dogs(options)
         ActiveRecord::Associations::Preloader.new.preload(dogs, extra_attrs)
         enhanced_dogs = dogs.as_json(include: extra_attrs)
@@ -15,8 +19,11 @@ module Api
         query = <<-query
           select
           d.*,
+          u.email as email,
+          u.phone as phone,
           case when uf.id is not null then true else false end as is_favorite
           from dogs d
+          left join users u on u.id = d.user_id
           left join user_favorites uf on uf.dog_id = d.id and uf.user_id = :user_id
           where d.id = :dog_id
         query
@@ -41,10 +48,10 @@ module Api
       end
 
       def update
-        dog = DogService.update_dog(dog_params, @current_user)
-        if dog.update_attributes(dog_params)
+        begin
+          dog = DogService.update_dog(dog_params, @current_user)
           render json: { data: dog }, status: :ok
-        else
+        rescue
           render json: { data: dog.errors }, status: :unprocessable_entity
         end
       end
@@ -53,6 +60,7 @@ module Api
 
       def dog_params
         params.permit(
+          :id,
           dog: [
             :name,
             :gender,

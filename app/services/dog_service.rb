@@ -30,10 +30,10 @@ class DogService
             dog.user_id = current_user.id
             dog.save!
 
-            breed_ids = params[:breeds].split(",")
-            breed_ids.each do | id |
+            breed_ids = params[:breeds]
+            breed_ids.each do | id |                
                 dog.breeds << Breed.find(id)
-            end
+            end if breed_ids.present?
 
             image_urls = params[:dog_images]
             image_urls.each_with_index do | url, i |
@@ -41,7 +41,7 @@ class DogService
                     url: url,
                     main_image: i == 0 ? true : false
                 })
-            end
+            end if image_urls.present?
 
             return dog
         end
@@ -58,7 +58,11 @@ class DogService
         # 7) Eye color ✅
         # 8) Miles away (low and high range) - haven’t worked on this at all really ⌛(pending)
         # 9) Favorite ✅
-        query_params = {
+
+       limit_clause   = options[:limit] ? "LIMIT #{options[:limit]}" : ''
+       offset_clause  = options[:offset] ? "OFFSET #{options[:offset]}" : ''
+
+       query_params = {
             name_filter: "%#{options[:name]}%",
             gender: options[:gender],
             papered: options[:papered],
@@ -85,13 +89,21 @@ class DogService
         query = <<-query
           select
             d.*,
+            count(*) OVER (),
+            u.email as email,
+            u.phone as phone,
             uf.id is not null as is_favorite
           from dogs d
+          left join users u on u.id = d.user_id
           left join dog_breeds db on d.id = db.dog_id
           left join breeds b on db.breed_id = b.id
           left join user_favorites uf on d.id = uf.dog_id and uf.user_id = :user_id
           #{'where ' + conditions.join("\n and ") unless conditions.empty?}
-          group by d.id, uf.id
+
+          group by d.id, uf.id, u.email, u.phone
+
+          #{limit_clause}
+          #{offset_clause}
         query
 
         dogs = Dog.find_by_sql([query, query_params])
