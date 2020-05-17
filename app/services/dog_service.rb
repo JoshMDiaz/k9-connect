@@ -30,10 +30,22 @@ class DogService
             dog.user_id = current_user.id
             dog.save!
 
+
             breed_ids = params[:breeds]
-            breed_ids.each do | id |                
-                dog.breeds << Breed.find(id)
-            end if breed_ids.present?
+            current_breed_ids = dog.breeds.pluck(:id)
+
+            extra_ids_to_remove = current_breed_ids - breed_ids
+            extra_ids_to_add = breed_ids - current_breed_ids
+
+            extra_ids_to_remove.each do | id |
+              breed = Breed.find(id)
+              dog.breeds.delete(breed) if breed.present?
+            end
+
+            extra_ids_to_add.each do | id |
+              breed = Breed.find(id)
+              dog.breeds << breed if breed.present?
+            end
 
             image_urls = params[:dog_images]
             image_urls.each_with_index do | url, i |
