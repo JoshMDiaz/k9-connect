@@ -40,20 +40,12 @@ class DogService
             extra_ids_to_remove.each do | id |
               breed = Breed.find(id)
               dog.breeds.delete(breed) if breed.present?
-            end
+            end if extra_ids_to_remove.present?
 
             extra_ids_to_add.each do | id |
               breed = Breed.find(id)
               dog.breeds << breed if breed.present?
-            end
-
-            image_urls = params[:dog_images]
-            image_urls.each_with_index do | url, i |
-                dog.dog_images << DogImage.create({
-                    url: url,
-                    main_image: i == 0 ? true : false
-                })
-            end if image_urls.present?
+            end if extra_ids_to_add.present?
 
             return dog
         end
