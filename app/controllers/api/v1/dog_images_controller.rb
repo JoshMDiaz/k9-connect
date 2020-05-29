@@ -10,10 +10,14 @@ module Api
       end
 
       def create
-        @dog_image = @dog.dog_images.new(dog_image_params)
-        if @dog_image.save
-          render json: { data: @dog_image }, status: :ok
-        else
+        begin
+          if dog_image_params["dog_images"].present?
+            dog_image_params["dog_images"].each do |dog_image_param|
+              @dog_image = @dog.dog_images.create(dog_image_param)
+            end
+          end
+          render json: { data: @dog }, status: :ok
+        rescue
           render json: { data: @dog_image.errors }, status: :unprocessable_entity
         end
       end
@@ -46,12 +50,9 @@ module Api
       end
 
       def dog_image_params
-        params.permit(
-          :dog_id,
-          :url,
-          :main_image
-        )
+        params.permit(:dog_id, dog_images: [ :url, :main_image ])
       end
+
     end
   end
 end
