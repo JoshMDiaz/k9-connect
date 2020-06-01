@@ -2,7 +2,10 @@ Rails.application.routes.draw do
   namespace 'api' do
     namespace 'v1' do
       resources :users
-      resources :dogs
+      resources :dogs do
+        resources :dog_images, only: [:index, :create]
+      end
+      resources :dog_images, only: [:show, :update, :destroy]
       resources :breeds
       resources :eye_colors
       resources :states
