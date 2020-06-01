@@ -10,16 +10,18 @@ module Api
       end
 
       def create
-        begin
-          if dog_image_params["dog_images"].present?
+        if dog_image_params["dog_images"].present?
+          begin
             dog_image_params["dog_images"].each do |dog_image_param|
               @dog_image = @dog.dog_images.create(dog_image_param)
             end
+          rescue => e
+            return render json: {error: e}, status: :unprocessable_entity
           end
-          render json: { data: @dog }, status: :ok
-        rescue
-          render json: { data: @dog_image.errors }, status: :unprocessable_entity
+        else
+          return render json: {error: "Please pass the correct params."}, status: :unprocessable_entity
         end
+        return render json: { data: @dog }, status: :ok
       end
 
       def show
@@ -27,7 +29,7 @@ module Api
       end
 
       def update
-        if @dog_image.update(dog_image_params)
+        if @dog_image.update(dog_image_param)
           render json: { data: @dog_image }, status: :ok
         else
           render json: { data: @dog_image.errors }, status: :unprocessable_entity
@@ -47,6 +49,10 @@ module Api
 
       def set_dog_image
         @dog_image = DogImage.find(params[:id])
+      end
+
+      def dog_image_param
+        params.require(:dog_image).permit(:url, :main_image)
       end
 
       def dog_image_params
